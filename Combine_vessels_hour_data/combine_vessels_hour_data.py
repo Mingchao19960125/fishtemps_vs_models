@@ -25,12 +25,12 @@ import numpy as np
 input_dir='E:\\programe\\raw_data_match\\result\\checked\\'
 #end_time=datetime.now()
 end_time=datetime.utcnow()
-start_time=end_time-timedelta(days=300)
+start_time=end_time-timedelta(days=313)
 #start_time=end_time-timedelta(weeks=1)
 #Hours_save='/home/jmanning/Mingchao/result/Hours_data/'
 Hours_save='E:\\Mingchao\\result\\Hours_data\\'
 getclim_path='E:\\programe\\aqmain\\py\\clim\\'
-    
+vessel_name = 'Virginia_Marie'#'Excalibur'    
 #main
 allfile_lists=zl.list_all_files(input_dir)
 file_lists=[]#store the path of every vessel's files
@@ -40,8 +40,10 @@ for file in allfile_lists:
    if file[len(file)-4:]=='.csv':
      file_lists.append(file)
 try:
-    for file in file_lists: # loop raw files         
+    for file in file_lists: # loop raw files
         fpath,fname=os.path.split(file)  #get the file's path and name
+        if fpath.split('\\')[5] != vessel_name:#get data of vessel that you want
+            continue
         time_str=fname.split('.')[0].split('_')[2]+' '+fname.split('.')[0].split('_')[3]
     #GMT time to local time of file
         time_gmt=datetime.strptime(time_str,"%Y%m%d %H%M%S")

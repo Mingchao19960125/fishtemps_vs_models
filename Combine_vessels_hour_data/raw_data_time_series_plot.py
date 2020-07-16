@@ -25,7 +25,7 @@ import matplotlib.ticker as ticker
 Hours_save = 'E:\\Mingchao\\result\\Hours_data\\'
 telemetry_status_path = 'E:\\Mingchao\\parameter\\telemetry_status.csv'
 start_time = datetime(2019,8,20,22,30,00)#temp_df.index[0]
-end_time = start_time+timedelta(weeks=8)
+end_time = start_time+timedelta(weeks=9)
 model_list = ['DOPPIO_T', 'GOMOFS_T', 'FVCOM_T']
 
 def get_Fixed_vessel(telemetry_status_path):

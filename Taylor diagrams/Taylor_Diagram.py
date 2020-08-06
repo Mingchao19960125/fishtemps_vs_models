@@ -64,7 +64,7 @@ ccoef = np.array([taylor_stats1['ccoef'][0], taylor_stats5['ccoef'][1],
     
 bias  = np.array([0, taylor_stats5['bias'], taylor_stats4['bias'], taylor_stats2['bias'],
                   taylor_stats3['bias'], taylor_stats1['bias']])
-label = ['Non-Dimensional Observation','EQ','OBJ','GOMOFS', 'FVCOM', 'DOPPIO']
+label = ['Non-Dimensional Observation','E','O','G', 'F', 'D']
 sm.taylor_diagram(sdev, crmsd, ccoef, markerLabel=label,
                       locationColorBar='EastOutside',
                       markerDisplayed='colorbar', titleColorBar='Bias', 
@@ -74,6 +74,6 @@ sm.taylor_diagram(sdev, crmsd, ccoef, markerLabel=label,
                       colSTD='b', styleSTD='-.', widthSTD=1.0, titleSTD ='on',
                       colCOR='k', styleCOR='--', widthCOR=1.0, titleCOR='on')
 # Write plot to file
-plt.savefig(save_path+'Taylor_Diagram.png')
+plt.savefig(save_path+'Taylor_Diagram.png',dpi=300)
 # Show plot
 plt.show()

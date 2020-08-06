@@ -14,8 +14,16 @@ import zlconversions as zl  # this is a set of Lei Zhao's functions that must be
 #################### Hardcodes ############################
 path = 'E:\\Mingchao\\paper\\vessel_dfs.csv'
 save_path = 'E:\\Mingchao\\paper\\'
-start_time = datetime.datetime(2019,4,20,00,00,00)
-end_time = datetime.datetime(2019,4,30,23,00,00)
+start_time = datetime.datetime(2018,9,30,21,00,00)
+end_time = datetime.datetime(2018,12,16,00,00,00)
+#end_time = datetime.datetime(2019,5,8,00,00,00)
+#Doppio
+url = 'http://tds.marine.rutgers.edu/thredds/dodsC/roms/doppio/2017_da/his/History_Best'#get_doppio_url(url_time)        
+nc = netCDF4.Dataset(url)
+lons = nc.variables['lon_rho'][:]
+lats = nc.variables['lat_rho'][:]
+temp = nc.variables['temp']
+doppio_time = nc.variables['time']
 ##################### Functions ###############################
 def get_doppio_url(date): # modification of Lei Zhao code to find the most recent DOPPIO url
     #url='http://tds.marine.rutgers.edu/thredds/dodsC/roms/doppio/2017_da/his/runs/History_RUN_2018-11-12T00:00:00Z'
@@ -202,7 +210,7 @@ def dist(lat1=0,lon1=0,lat2=0,lon2=0):
                         np.sin(lat1)*np.sin(lat2))*conversion_factor
     return l
 
-def get_doppio_no_fitting(lat=0,lon=0,depth=99999,time='2018-11-12 12:00:00'):
+def get_doppio_no_fitting(lons,lats,temp,doppio_time,lat=0,lon=0,depth=99999,time='2018-11-12 12:00:00'):
     """
     notice:
         the format of time is like "%Y-%m-%d %H:%M:%S"
@@ -214,13 +222,13 @@ def get_doppio_no_fitting(lat=0,lon=0,depth=99999,time='2018-11-12 12:00:00'):
     date_time=time
     for i in range(0,7): # look back 7 hours for data
         #url_time=(date_time-datetime.timedelta(hours=i)).strftime('%Y-%m-%d')#
-        url='http://tds.marine.rutgers.edu/thredds/dodsC/roms/doppio/2017_da/his/History_Best'#get_doppio_url(url_time)        
-        nc=netCDF4.Dataset(url)
-        lons=nc.variables['lon_rho'][:]
-        lats=nc.variables['lat_rho'][:]
-        temp=nc.variables['temp']
-        doppio_time=nc.variables['time']
-        doppio_depth=nc.variables['h'][:]
+#        url = 'http://tds.marine.rutgers.edu/thredds/dodsC/roms/doppio/2017_da/his/History_Best'#get_doppio_url(url_time)        
+#        nc=netCDF4.Dataset(url)
+#        lons=nc.variables['lon_rho'][:]
+#        lats=nc.variables['lat_rho'][:]
+#        temp=nc.variables['temp']
+#        doppio_time=nc.variables['time']
+        #doppio_depth=nc.variables['h'][:]
         min_diff_time=abs(datetime.datetime(2017,11,1,0,0,0)+datetime.timedelta(hours=int(doppio_time[0]))-date_time)
         min_diff_index=0
         for i in range(1,157): # 6.5 days and 24
@@ -239,8 +247,8 @@ def get_doppio_no_fitting(lat=0,lon=0,depth=99999,time='2018-11-12 12:00:00'):
                     index_2=j
         if depth==99999:# case of bottom
             S_coordinate=1
-        else:
-            S_coordinate=float(depth)/float(doppio_depth[index_1][index_2])
+        #else:
+            #S_coordinate=float(depth)/float(doppio_depth[index_1][index_2])
         if 0<=S_coordinate<1:
             point_temp=temp[min_diff_index][39-int(S_coordinate/0.025)][index_1][index_2]# because there are 0.025 between each later
             #point_depth=doppio_depth[index_1][index_2]
@@ -265,16 +273,18 @@ comparison_df['observation_T'] = file['observation_T']
 comparison_df['fitting'] = file['Doppio_T']
 comparison_df['time'] = pd.to_datetime(file['time'])
 comparison_df = comparison_df.dropna(subset=['fitting'])
+
 for i in comparison_df.index:
     if start_time<comparison_df['time'][i]<end_time:
         try:
             #a = get_doppio_fitting(latp=comparison_df['lat'][i],lonp=comparison_df['lon'][i],depth='bottom',dtime=comparison_df['time'][i],fortype='tempdepth')
-            b = get_doppio_no_fitting(lat=comparison_df['lat'][i],lon=comparison_df['lon'][i],depth=99999,time=comparison_df['time'][i])
+            b = get_doppio_no_fitting(lons,lats,temp,doppio_time,lat=comparison_df['lat'][i],lon=comparison_df['lon'][i],depth=99999,time=comparison_df['time'][i])
             #comparison_df['fitting'][i] = a[0]
             comparison_df['no_fitting'][i] = b
+            print('good data:'+str(comparison_df['time'][i]))
             pass
         except Exception as result:
-            print(comparison_df['time'][i])
+            print(str(comparison_df['time'][i]))
             print(result)
             continue
     pass        

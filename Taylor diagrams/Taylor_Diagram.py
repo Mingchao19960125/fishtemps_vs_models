@@ -29,38 +29,42 @@ def taylor_statistics(p, r):
     return stats
 
 ####################### Hardcodes ###########################################3
-path = 'E:\\Mingchao\\paper\\vessel_dfs.csv'
+path = 'E:\\Mingchao\\test\\ensemble_data.csv'
 save_path = 'E:\\Mingchao\\paper\\'
 start_time = datetime.datetime(2019,1,1,0,0,0)
-end_time = datetime.datetime(2020,1,1,0,0,0)
+end_time = datetime.datetime(2020,4,1,0,0,0)
 
 ####################### MAIN ###########################################3
 data = pd.read_csv(path, index_col=0)
-data['ENSEMBLE_T'] = 1.000000
+#data['ENSEMBLE_T'] = 1.000000
 data['time'] = pd.to_datetime(data['time'])
-data = data.dropna()
+#data = data.dropna()
 for i in data.index:
-    data['ENSEMBLE_T'][i] = (data['Doppio_T'][i]+data['FVCOM_T'][i]+data['GoMOLFs_T'][i])/3
+#    data['ENSEMBLE_T'][i] = (data['Doppio_T'][i]+data['FVCOM_T'][i]+data['GoMOLFs_T'][i])/3
     if not start_time<data['time'][i]<end_time:
         data = data.drop(i)
 # Calculate statistics for Taylor diagram
-taylor_stats1 = taylor_statistics(data.Doppio_T, data.observation_T)
+taylor_stats1 = taylor_statistics(data.Doppio_T, data.observation_T,)
 taylor_stats2 = taylor_statistics(data.GoMOLFs_T, data.observation_T)
 taylor_stats3 = taylor_statistics(data.FVCOM_T, data.observation_T)
-taylor_stats4 = taylor_statistics(data.ENSEMBLE_T, data.observation_T)
+taylor_stats4 = taylor_statistics(data['obj'].values, data.observation_T)
+taylor_stats5 = taylor_statistics(data['eq'].values, data.observation_T)
  # Store statistics in arrays
-sdev = np.array([taylor_stats1['sdev'][0], taylor_stats4['sdev'][1], 
-                 taylor_stats2['sdev'][1], taylor_stats3['sdev'][1],
-                 taylor_stats1['sdev'][1]])
-crmsd = np.array([taylor_stats1['crmsd'][0], taylor_stats4['crmsd'][1], 
-                  taylor_stats2['crmsd'][1], taylor_stats3['crmsd'][1],
-                  taylor_stats1['crmsd'][1]])
-ccoef = np.array([taylor_stats1['ccoef'][0], taylor_stats4['ccoef'][1], 
-                  taylor_stats2['ccoef'][1], taylor_stats3['ccoef'][1],
-                  taylor_stats1['ccoef'][1]])
-bias  = np.array([0, taylor_stats2['bias'], taylor_stats4['bias'],
+sdev = np.array([taylor_stats1['sdev'][0], taylor_stats5['sdev'][1],
+                 taylor_stats4['sdev'][1], taylor_stats2['sdev'][1],
+                 taylor_stats3['sdev'][1], taylor_stats1['sdev'][1]])
+    
+crmsd = np.array([taylor_stats1['crmsd'][0], taylor_stats5['crmsd'][1], 
+                  taylor_stats4['crmsd'][1], taylor_stats2['crmsd'][1], 
+                  taylor_stats3['crmsd'][1], taylor_stats1['crmsd'][1]])
+    
+ccoef = np.array([taylor_stats1['ccoef'][0], taylor_stats5['ccoef'][1], 
+                  taylor_stats4['ccoef'][1], taylor_stats2['ccoef'][1], 
+                  taylor_stats3['ccoef'][1], taylor_stats1['ccoef'][1]])
+    
+bias  = np.array([0, taylor_stats5['bias'], taylor_stats4['bias'], taylor_stats2['bias'],
                   taylor_stats3['bias'], taylor_stats1['bias']])
-label = ['Non-Dimensional Observation', 'E','GOMOFS', 'FVCOM', 'DOPPIO']
+label = ['Non-Dimensional Observation','EQ','OBJ','GOMOFS', 'FVCOM', 'DOPPIO']
 sm.taylor_diagram(sdev, crmsd, ccoef, markerLabel=label,
                       locationColorBar='EastOutside',
                       markerDisplayed='colorbar', titleColorBar='Bias', 

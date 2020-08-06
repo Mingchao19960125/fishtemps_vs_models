@@ -8,10 +8,19 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as dates
-import os
-from matplotlib import gridspec
+import sklearn
 import math
+from matplotlib import gridspec
 from scipy import stats
+
+def rmse(actual, predicted):
+    '''
+    get Root Mean Square Error
+    actual is observation data,predicted is model's data
+    '''
+    mse = sklearn.metrics.mean_squared_error(actual, predicted)
+    rmse = math.sqrt(mse)
+    return float(rmse)
 
 def multipl(a,b):
     '''
@@ -102,6 +111,8 @@ nofitting_list = list(comparison_df['no_fitting'])#.loc[comparison_df['season']=
 print('observation mean:%.2f'%np.mean(observation_list),'fitting mean:%.2f'%np.mean(fitting_list),'no_fitting mean:%.2f'%np.mean(nofitting_list))
 print('observation std:%.2f'%np.std(observation_list),'fitting std:%.2f'%np.std(fitting_list),'no_fitting std:%.2f'%np.std(nofitting_list))
 print('observation var:%.2f'%np.var(observation_list),'fitting var:%.2f'%np.var(fitting_list),'no_fitting var:%.2f'%np.var(nofitting_list))
+print('fitting bias:%.2f'%(np.mean(observation_list)-np.mean(fitting_list)),'no_fitting bias:%.2f'%(np.mean(observation_list)-np.var(nofitting_list)))
 print('fitting Correlation coefficient:%.2f'%corrcoef(fitting_list,observation_list),'no_fitting Correlation coefficient:%.2f'%corrcoef(nofitting_list,observation_list))
+print('fitting RMSE:%.2f'%rmse(observation_list,fitting_list),'no_fitting RMSE:%.2f'%rmse(observation_list,nofitting_list))
 fig.suptitle('Comparison of Interpolation methods',fontsize=16)
-plt.savefig(os.path.join(path_save,'interpolation_comparison_figure.png'),dpi=300)
+#plt.savefig(os.path.join(path_save,'interpolation_comparison_figure.png'),dpi=300)

@@ -26,7 +26,7 @@ gridsize=0.5 # needed when which_method is binned in units of lat/lon
 which_mode='models' # 'models' or 'season'
 which_model=1 # 0-4 depends on options below used when which_mode= "season"
 ensemble = 'off'# 'on' or 'off' for using ensemble
-options=[' Objective weighting method','Equal weighting method','DOPPIO','FVCOM','GOMOFS','CLIMATOLOGY','MODELS']
+options=[' Objective','Equal','DOPPIO','FVCOM','GOMOFS','CLIMATOLOGY','MODELS']
 models=['obj','eq','Doppio_T','FVCOM_T','GoMOLFs_T','Clim_T','MODELS']
 seasons = ['WINTER', 'SPRING', 'SUMMER', 'FALL']  
 save_path = os.environ['PROJ_LIB']+'\\Map obs-model include ensemble.png'

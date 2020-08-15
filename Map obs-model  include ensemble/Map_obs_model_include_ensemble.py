@@ -26,7 +26,7 @@ gridsize=0.5 # needed when which_method is binned in units of lat/lon
 which_mode='models' # 'models' or 'season'
 which_model=1 # 0-4 depends on options below used when which_mode= "season"
 ensemble = 'off'# 'on' or 'off' for using ensemble
-options=['BILINER','NEAREST','DOPPIO','FVCOM','GOMOFS','CLIMATOLOGY','MODELS']
+options=[' Objective weighting method','Equal weighting method','DOPPIO','FVCOM','GOMOFS','CLIMATOLOGY','MODELS']
 models=['obj','eq','Doppio_T','FVCOM_T','GoMOLFs_T','Clim_T','MODELS']
 seasons = ['WINTER', 'SPRING', 'SUMMER', 'FALL']  
 save_path = os.environ['PROJ_LIB']+'\\Map obs-model include ensemble.png'
@@ -146,7 +146,7 @@ for i in range(6):# this runs the other three
 c3 = fig.colorbar(a, ax=[ax1, ax2, ax3, ax4, ax5, ax6])
 c3.set_ticks(np.arange(-1*maxdiff_ignore,maxdiff_ignore))
 c3.set_ticklabels(np.arange(-maxdiff_ignore,maxdiff_ignore))
-fig.text(0.5, 0.93, 'Observation and Other Models', ha='center', va='center', fontsize=2.0*size)
+fig.text(0.5, 0.93, 'Observation minus Other Models', ha='center', va='center', fontsize=2.0*size)
 plt.suptitle('Comparison of temperature differences', va='center_baseline', fontsize=2.5*size)
 plt.savefig(save_path,dpi=300)
 plt.show()
